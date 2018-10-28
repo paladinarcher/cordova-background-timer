@@ -56,7 +56,7 @@
         </config-file>
     </platform>
     <platform name="ios">
-        <config-file target="config.xml" parent="/*">
+        <config-file target="res/xml/config.xml" parent="/*">
             <preference name="UseSwiftLanguageVersion" value="4" />
             <feature name="BackgroundTimer">
                 <param name="ios-package" value="BackgroundTimer" />
