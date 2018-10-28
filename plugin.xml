@@ -54,8 +54,8 @@
         </config-file>
     </platform>
     <platform name="ios">
-        <dependency id="cordova-plugin-add-swift-support" version="1.7.2"/>
         <preference name="UseSwiftLanguageVersion" value="4" />
+        <dependency id="cordova-plugin-add-swift-support" version="1.7.2"/>
         <config-file target="config.xml" parent="/*">
             <feature name="BackgroundTimer">
                 <param name="ios-package" value="BackgroundTimer" />
