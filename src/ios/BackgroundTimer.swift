@@ -1,11 +1,11 @@
 @objc(BackgroundTimer) class BackgroundTimer : CDVPlugin {
 
-  let onTimerEventCommands: [String] = []
+  var onTimerEventCommands: [String] = []
   let timerInterval: TimeInterval = 9
 
   private lazy var timer: DispatchSourceTimer = {
     let t = DispatchSource.makeTimerSource()
-    t.schedule(deadline: .now() + self.timeInterval, repeating: self.timeInterval)
+    t.scheduleRepeating(deadline: <#T##DispatchTime#>, interval: <#T##DispatchTimeInterval#>)
     t.setEventHandler(handler: { [weak self] in
       self?.eventHandler?()
     })
@@ -28,63 +28,27 @@
         If the timer is suspended, calling cancel without resuming
         triggers a crash. This is documented here https://forums.developer.apple.com/thread/15902
         */
-      resume()
+      if state != .resumed {
+          state = .resumed
+          timer.resume()
+      }
       eventHandler = nil
   }
 
-  @objc(echo:)
-  func echo(command: CDVInvokedUrlCommand) {
-    var pluginResult = CDVPluginResult(
-      status: CDVCommandStatus_ERROR
-    )
-
-    let msg = command.arguments[0] as? String ?? ""
-
-    if msg.characters.count > 0 {
-      let toastController: UIAlertController =
-        UIAlertController(
-          title: "",
-          message: msg,
-          preferredStyle: .alert
-        )
-      
-      self.viewController?.present(
-        toastController,
-        animated: true,
-        completion: nil
-      )
-
-      DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-        toastController.dismiss(
-            animated: true,
-            completion: nil
-        )
-      }
-        
-      pluginResult = CDVPluginResult(
-        status: CDVCommandStatus_OK,
-        messageAs: msg
-      )
-    }
-
-    self.commandDelegate!.send(
-      pluginResult,
-      callbackId: command.callbackId
-    )
-  }
   @objc(onTimerEvent:)
   func onTimerEvent(command: CDVInvokedUrlCommand) {
-    onTimerEventCommands.append(command.callbackId);
+    let cmd = command.callbackId;
+    onTimerEventCommands.append(cmd!);
   }
   func fireOnTimerEvent() {
-    var pluginResult = CDVPluginResult(
+    let pluginResult = CDVPluginResult(
       status: CDVCommandStatus_OK
-      setKeepCallbackAsBool: YES
     )
+    pluginResult!.setKeepCallbackAs(true)
     for itm in onTimerEventCommands {
-      self?.commandDelegate!.send(
+      self.commandDelegate!.send(
         pluginResult,
-        callbackId: item
+        callbackId: itm
       )
     }
   }
