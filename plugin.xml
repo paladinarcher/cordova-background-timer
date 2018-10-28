@@ -3,7 +3,7 @@
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="cordova-background-timer"
-    version="0.0.4">
+    version="0.0.5">
 
     <name>BackgroundTimer</name>
     <description></description>
@@ -17,6 +17,8 @@
     <js-module src="www/BackgroundTimer.js" name="BackgroundTimer">
         <clobbers target="window.BackgroundTimer" />
     </js-module>
+
+    <dependency id="cordova-plugin-add-swift-support" version="1.7.2"/>
 
     <!-- android -->
     <platform name="android">
@@ -53,5 +55,13 @@
           </feature>
         </config-file>
     </platform>
-     <!--<platform name="ios">has not implemented yet</platform>-->
+    <platform name="ios">
+        <preference name="UseSwiftLanguageVersion" value="4" />
+        <config-file target="config.xml" parent="/*">
+            <feature name="BackgroundTimer">
+                <param name="ios-package" value="BackgroundTimer" />
+            </feature>
+        </config-file>
+        <source-file src="src/ios/BackgroundTimer.swift">
+    </platform>
 </plugin>
