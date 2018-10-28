@@ -18,8 +18,6 @@
         <clobbers target="window.BackgroundTimer" />
     </js-module>
 
-    <dependency id="cordova-plugin-add-swift-support" version="1.7.2"/>
-
     <!-- android -->
     <platform name="android">
 		<framework src="src/android/build.gradle" custom="true" type="gradleReference" />
@@ -56,8 +54,9 @@
         </config-file>
     </platform>
     <platform name="ios">
+        <dependency id="cordova-plugin-add-swift-support" version="1.7.2"/>
+        <preference name="UseSwiftLanguageVersion" value="4" />
         <config-file target="config.xml" parent="/*">
-            <preference name="UseSwiftLanguageVersion" value="4" />
             <feature name="BackgroundTimer">
                 <param name="ios-package" value="BackgroundTimer" />
             </feature>
