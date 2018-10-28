@@ -62,7 +62,7 @@
         
         self.eventHandler = {
             let pluginResult = CDVPluginResult( status: CDVCommandStatus_OK, messageAs: "Timer fired");
-            pluginResult!.setKeepCallbackAs(true);
+            pluginResult!.setKeepCallbackAs(false);
             self.commandDelegate!.send(pluginResult, callbackId:self.onTimerEventCallbackContext)
         }
         
