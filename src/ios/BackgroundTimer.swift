@@ -5,7 +5,7 @@
 
   private lazy var timer: DispatchSourceTimer = {
     let t = DispatchSource.makeTimerSource()
-    t.scheduleRepeating(deadline: <#T##DispatchTime#>, interval: <#T##DispatchTimeInterval#>)
+    t.scheduleRepeating(deadline: .now() + self.timerInterval, interval: self.timerInterval)
     t.setEventHandler(handler: { [weak self] in
       self?.eventHandler?()
     })
