@@ -30,7 +30,7 @@
             state = .resumed
             timer.resume()
         }
-
+        
         timer.setEventHandler {}
         timer.cancel()
         
@@ -53,10 +53,10 @@
             messageAs: "Already started"
         )
         
-        self.eventHandler = {
+        self.eventHandler = { [weak self] in
             let pluginResult = CDVPluginResult( status: CDVCommandStatus_OK, messageAs: "Timer fired");
             pluginResult!.setKeepCallbackAs(true);
-            self.commandDelegate!.send(pluginResult, callbackId:self.onTimerEventCallbackContext)
+            self?.commandDelegate!.send(pluginResult, callbackId:self?.onTimerEventCallbackContext)
         }
         
         if state != .resumed {
