@@ -3,14 +3,16 @@
     var onTimerEventCallbackContext:String?
     let timerInterval: TimeInterval = 9
     
-    private lazy var timer: DispatchSourceTimer = {
+    private var timer: DispatchSourceTimer?;
+    
+    func getNewTimer() -> DispatchSourceTimer {
         let t = DispatchSource.makeTimerSource()
         t.scheduleRepeating(deadline: .now() + self.timerInterval, interval: self.timerInterval)
         t.setEventHandler(handler: { [weak self] in
             self?.eventHandler?()
         })
         return t
-    }()
+    }
     
     var eventHandler: (() -> Void)?
     
@@ -28,11 +30,11 @@
          */
         if state != .resumed {
             state = .resumed
-            timer.resume()
+            timer?.resume()
         }
         
-        timer.setEventHandler {}
-        timer.cancel()
+        timer?.setEventHandler {}
+        timer?.cancel()
         
         eventHandler = nil
     }
@@ -53,6 +55,9 @@
             messageAs: "Already started"
         )
         
+        timer?.cancel()
+        timer = getNewTimer()
+        
         self.eventHandler = { [weak self] in
             let pluginResult = CDVPluginResult( status: CDVCommandStatus_OK, messageAs: "Timer fired");
             pluginResult!.setKeepCallbackAs(true);
@@ -61,7 +66,7 @@
         
         if state != .resumed {
             state = .resumed
-            timer.resume()
+            timer?.resume()
             pluginResult = CDVPluginResult(
                 status: CDVCommandStatus_OK,
                 messageAs: "Started Successfully"
@@ -82,7 +87,7 @@
         
         if state != .suspended {
             state = .suspended
-            timer.suspend()
+            timer?.suspend()
             pluginResult = CDVPluginResult(
                 status: CDVCommandStatus_OK,
                 messageAs: "Stopped Successfully"
