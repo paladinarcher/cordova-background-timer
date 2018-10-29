@@ -1,13 +1,13 @@
 @objc(BackgroundTimer) class BackgroundTimer : CDVPlugin {
     
     var onTimerEventCallbackContext:String?
-    let timerMilliseconds: Int = 9000
+    let timerSeconds: Int = 30
     
     private var timer: DispatchSourceTimer?;
     
     func getNewTimer() -> DispatchSourceTimer {
         let t = DispatchSource.makeTimerSource()
-        t.scheduleRepeating(deadline: .now() + .milliseconds(self.timerMilliseconds), interval: .milliseconds(self.timerMilliseconds))
+        t.scheduleRepeating(deadline: .now() + .seconds(self.timerSeconds), interval: .seconds(self.timerSeconds))
         t.setEventHandler(handler: { [weak self] in
             let pr = CDVPluginResult( status: CDVCommandStatus_OK, messageAs: "Timer fired");
             pr!.setKeepCallbackAs(true);
