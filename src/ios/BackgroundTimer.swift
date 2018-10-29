@@ -50,33 +50,31 @@
     }
     @objc(start:)
     func start(command: CDVInvokedUrlCommand) {
-        var pluginResult = CDVPluginResult(
-            status: CDVCommandStatus_ERROR,
-            messageAs: "Already started"
-        )
-        
-        timer?.cancel()
-        timer = getNewTimer()
-        
-        self.eventHandler = { [weak self] in
-            let pluginResult = CDVPluginResult( status: CDVCommandStatus_OK, messageAs: "Timer fired");
-            pluginResult!.setKeepCallbackAs(true);
-            self?.commandDelegate!.send(pluginResult, callbackId:self?.onTimerEventCallbackContext)
-        }
-        
-        if state != .resumed {
-            state = .resumed
-            timer?.resume()
+        self.commandDelegate!.run(inBackground: {
+            var pluginResult = CDVPluginResult(
+                status: CDVCommandStatus_ERROR,
+                messageAs: "Already started"
+            )
+            
+            self.timer?.cancel()
+            self.timer = self.getNewTimer()
+            
+            self.eventHandler = { [weak self] in
+                let pr = CDVPluginResult( status: CDVCommandStatus_OK, messageAs: "Timer fired");
+                pr!.setKeepCallbackAs(true);
+                self?.commandDelegate!.send(pr, callbackId:self?.onTimerEventCallbackContext)
+            }
+            
+            self.timer?.resume()
             pluginResult = CDVPluginResult(
                 status: CDVCommandStatus_OK,
                 messageAs: "Started Successfully"
             )
-        }
-        
-        self.commandDelegate!.send(
-            pluginResult,
-            callbackId: command.callbackId
-        )
+            self.commandDelegate!.send(
+                pluginResult,
+                callbackId: command.callbackId
+            )
+        })
     }
     @objc(stop:)
     func stop(command: CDVInvokedUrlCommand) {
