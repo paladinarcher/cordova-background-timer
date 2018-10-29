@@ -51,6 +51,12 @@
             messageAs: "Already started"
         )
         
+        self.eventHandler = {
+            let pluginResult = CDVPluginResult( status: CDVCommandStatus_OK, messageAs: "Timer fired");
+            pluginResult!.setKeepCallbackAs(true);
+            self.commandDelegate!.send(pluginResult, callbackId:self.onTimerEventCallbackContext)
+        }
+        
         if state != .resumed {
             state = .resumed
             timer.resume()
@@ -58,12 +64,6 @@
                 status: CDVCommandStatus_OK,
                 messageAs: "Started Successfully"
             )
-        }
-        
-        self.eventHandler = {
-            let pluginResult = CDVPluginResult( status: CDVCommandStatus_OK, messageAs: "Timer fired");
-            pluginResult!.setKeepCallbackAs(true);
-            self.commandDelegate!.send(pluginResult, callbackId:self.onTimerEventCallbackContext)
         }
         
         self.commandDelegate!.send(
