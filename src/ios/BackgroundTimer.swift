@@ -9,12 +9,12 @@
         let t = DispatchSource.makeTimerSource()
         t.scheduleRepeating(deadline: .now() + .milliseconds(self.timerMilliseconds), interval: .milliseconds(self.timerMilliseconds))
         t.setEventHandler(handler: { [weak self] in
-            self?.eventHandler?()
+            let pr = CDVPluginResult( status: CDVCommandStatus_OK, messageAs: "Timer fired");
+            pr!.setKeepCallbackAs(true);
+            self?.commandDelegate!.send(pr, callbackId:self?.onTimerEventCallbackContext)
         })
         return t
     }
-    
-    var eventHandler: (() -> Void)?
     
     private enum State {
         case suspended
@@ -35,8 +35,6 @@
         
         timer?.setEventHandler {}
         timer?.cancel()
-        
-        eventHandler = nil
     }
     
     @objc(onTimerEvent:)
@@ -58,12 +56,6 @@
             
             self.timer?.cancel()
             self.timer = self.getNewTimer()
-            
-            self.eventHandler = { [weak self] in
-                let pr = CDVPluginResult( status: CDVCommandStatus_OK, messageAs: "Timer fired");
-                pr!.setKeepCallbackAs(true);
-                self?.commandDelegate!.send(pr, callbackId:self?.onTimerEventCallbackContext)
-            }
             
             self.timer?.resume()
             pluginResult = CDVPluginResult(
